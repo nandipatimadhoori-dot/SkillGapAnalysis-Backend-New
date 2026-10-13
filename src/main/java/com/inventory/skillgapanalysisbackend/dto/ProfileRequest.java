@@ -1,0 +1,2 @@
+package com.inventory.skillgapanalysisbackend.dto;
+public class ProfileRequest { private String education,experience,careerInterest,skills; public String getEducation(){return education;} public void setEducation(String v){education=v;} public String getExperience(){return experience;} public void setExperience(String v){experience=v;} public String getCareerInterest(){return careerInterest;} public void setCareerInterest(String v){careerInterest=v;} public String getSkills(){return skills;} public void setSkills(String v){skills=v;} }
