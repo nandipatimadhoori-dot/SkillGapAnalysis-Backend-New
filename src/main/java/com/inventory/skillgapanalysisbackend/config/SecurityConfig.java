@@ -1,4 +1,3 @@
-
 package com.inventory.skillgapanalysisbackend.config;
 
 import com.inventory.skillgapanalysisbackend.Security.JwtAuthenticationFilter;
@@ -17,43 +16,62 @@ import java.util.List;
 @Configuration
 public class SecurityConfig {
 
- private final JwtAuthenticationFilter jwtFilter;
+    private final JwtAuthenticationFilter jwtFilter;
 
- public SecurityConfig(JwtAuthenticationFilter jwtFilter) {
-  this.jwtFilter = jwtFilter;
- }
+    public SecurityConfig(JwtAuthenticationFilter jwtFilter) {
+        this.jwtFilter = jwtFilter;
+    }
 
- @Bean
- public PasswordEncoder passwordEncoder() {
-  return new BCryptPasswordEncoder();
- }
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
 
- @Bean
- public SecurityFilterChain securityFilterChain(
-         HttpSecurity http) throws Exception {
+    @Bean
+    public SecurityFilterChain securityFilterChain(
+            HttpSecurity http) throws Exception {
 
-  http
-          .csrf(csrf -> csrf.disable())
-          .cors(cors -> cors.configurationSource(request -> {
-           CorsConfiguration config = new CorsConfiguration();
-           config.setAllowedOrigins(
-                   List.of("http://localhost:5173"));
-           config.setAllowedMethods(
-                   List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-           config.setAllowedHeaders(List.of("*"));
-           return config;
-          }))
-          .sessionManagement(session ->
-                  session.sessionCreationPolicy(
-                          SessionCreationPolicy.STATELESS))
+        http
+                .csrf(csrf -> csrf.disable())
 
-          .authorizeHttpRequests(auth -> auth
-                  .anyRequest().permitAll())
+                .cors(cors -> cors.configurationSource(request -> {
+                    CorsConfiguration config = new CorsConfiguration();
 
-          .addFilterBefore(
-                  jwtFilter,
-                  UsernamePasswordAuthenticationFilter.class);
+                    config.setAllowedOrigins(List.of(
+                            "http://localhost:5173",
+                            "https://skill-gap-analysis-frontend.vercel.app"
+                    ));
 
-  return http.build();
- }
+                    config.setAllowedMethods(List.of(
+                            "GET",
+                            "POST",
+                            "PUT",
+                            "PATCH",
+                            "DELETE",
+                            "OPTIONS"
+                    ));
+
+                    config.setAllowedHeaders(List.of("*"));
+                    config.setAllowCredentials(true);
+
+                    return config;
+                }))
+
+                .sessionManagement(session ->
+                        session.sessionCreationPolicy(
+                                SessionCreationPolicy.STATELESS
+                        )
+                )
+
+                .authorizeHttpRequests(auth -> auth
+                        .anyRequest().permitAll()
+                )
+
+                .addFilterBefore(
+                        jwtFilter,
+                        UsernamePasswordAuthenticationFilter.class
+                );
+
+        return http.build();
+    }
 }
